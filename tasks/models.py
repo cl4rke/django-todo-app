@@ -17,15 +17,14 @@ class Task(BaseModel):
 
     def __str__(self):
         completion = '✓' if self.completed() else '✗'
+        basic_info = "%s [%d] %s" % (completion, self.id, self.title)
 
         if self.description:
-            return '%s [%d] %s: %s' % (
-                    completion,
-                    self.id,
-                    self.title,
+            return '%s: %s' % (
+                    basic_info,
                     self.description
             )
-        return '%s [%d] %s' % (completion, self.id, self.title)
+        return basic_info
 
     def completed(self):
         if self.recurring:
