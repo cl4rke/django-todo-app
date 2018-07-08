@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from tasks.models import Task
 
 class Command(BaseCommand):
-    help = 'Creates a task'
+    help = 'Lists unfinished tasks for the day'
 
     def add_arguments(self, parser):
         pass

@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from tasks.models import Task, Completion
 
 class Command(BaseCommand):
-    help = 'Creates a task'
+    help = 'Completes a task'
 
     def add_arguments(self, parser):
         parser.add_argument('task_pk', type=int)
