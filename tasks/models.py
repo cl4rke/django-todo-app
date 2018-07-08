@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 import datetime
 
 
@@ -19,12 +20,18 @@ class Task(BaseModel):
         completion = '✓' if self.completed() else '✗'
         basic_info = "%s [%d] %s" % (completion, self.id, self.title)
 
+        days_old = (timezone.now() - self.create_date).days
+        day_unit = ('day' if days_old == 1 else 'days') + ' old'
+        age_info = ' (%s %s)' % (days_old, day_unit) \
+                if days_old and not recurring else ''
+
         if self.description:
-            return '%s: %s' % (
+            return '%s: %s %s' % (
                     basic_info,
-                    self.description
+                    self.description,
+                    age_info
             )
-        return basic_info
+        return '%s %s' % (basic_info, age_info)
 
     def completed(self):
         if self.recurring:
