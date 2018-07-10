@@ -17,13 +17,24 @@ class Task(BaseModel):
     recurring = models.BooleanField()
 
     def __str__(self):
-        completion = '✓' if self.completed() else '✗'
+        completed = self.completed()
+        completion = '✓' if completed else '✗'
         basic_info = "%s [%d] %s" % (completion, self.id, self.title)
 
-        days_old = (timezone.now() - self.create_date).days
+        if completed:
+            if self.description:
+                return '%s: %s' % (basic_info, self.description)
+            return basic_info
+
+        last_touch_date = self.create_date
+
+        if self.completion_set.exists():
+            last_touch_date = self.completion_set.last().create_date
+
+        days_old = (timezone.now() - last_touch_date).days
         day_unit = ('day' if days_old == 1 else 'days') + ' old'
-        age_info = ' (%s %s)' % (days_old, day_unit) \
-                if days_old and not self.recurring else ''
+        age_info = '(%s %s)' % (days_old, day_unit) \
+                if days_old else ''
 
         if self.description:
             return '%s: %s %s' % (
@@ -35,9 +46,9 @@ class Task(BaseModel):
 
     def completed(self):
         if self.recurring:
-            completions = self.completion_set \
-                    .filter(create_date__date=datetime.date.today())
-            return len(completions) > 0
+            return self.completion_set \
+                    .filter(create_date__date=datetime.date.today()) \
+                    .exists()
 
         return len(self.completion_set.all()) > 0
 
