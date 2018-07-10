@@ -23,7 +23,7 @@ class Task(BaseModel):
         days_old = (timezone.now() - self.create_date).days
         day_unit = ('day' if days_old == 1 else 'days') + ' old'
         age_info = ' (%s %s)' % (days_old, day_unit) \
-                if days_old and not recurring else ''
+                if days_old and not self.recurring else ''
 
         if self.description:
             return '%s: %s %s' % (
