@@ -19,6 +19,7 @@ class Command(BaseCommand):
 
         tasks = Task.objects \
                 .prefetch_related('completion_set') \
-                .filter(incomplete_recurring | incomplete_adhoc)
+                .filter(incomplete_recurring | incomplete_adhoc) \
+                .distinct()
 
         print('\n'.join(map(lambda t: str(t), tasks)))
